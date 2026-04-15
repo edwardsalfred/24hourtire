@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Competitive Analysis — 24 Hour Tire Houston</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f6f4f0;
+    --card: #fffefa;
+    --ink: #1a1714;
+    --ink-soft: #5a534b;
+    --ink-mute: #8b847a;
+    --accent: #c45d3e;
+    --accent-soft: #e8b8a5;
+    --line: #e5ded2;
+    --hazard: #d89b2a;
+    --good: #4a7a4e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    z-index: 1;
+  }
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 72px 56px 96px;
+    position: relative;
+    z-index: 2;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Instrument Serif', 'Times New Roman', serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0;
+  }
+  h1 { font-size: 68px; line-height: 1; }
+  h2 { font-size: 40px; line-height: 1.1; margin-bottom: 8px; }
+  h3 { font-size: 26px; line-height: 1.2; }
+  h4 { font-size: 20px; }
+  p { margin: 0 0 16px; color: var(--ink-soft); }
+  .mono, .badge, .num, .tag {
+    font-family: 'DM Sans', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- COVER ---------- */
+  .cover {
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 56px 0;
+    margin-bottom: 72px;
+    position: relative;
+  }
+  .cover-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-bottom: 40px;
+  }
+  .cover-title { font-size: 84px; line-height: 0.92; margin-bottom: 32px; }
+  .cover-title em { color: var(--accent); font-style: italic; }
+  .cover-sub {
+    max-width: 560px;
+    font-size: 17px;
+    color: var(--ink-soft);
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+  }
+  .badge-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 40px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--ink);
+    border-radius: 100px;
+    font-size: 10px;
+    background: var(--card);
+  }
+  .badge.accent { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* ---------- SECTION ---------- */
+  section { margin-bottom: 64px; position: relative; }
+  .section-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 120px;
+    line-height: 0.8;
+    color: var(--line);
+    position: absolute;
+    right: -20px;
+    top: -30px;
+    pointer-events: none;
+    user-select: none;
+  }
+  .section-kicker {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-kicker::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ---------- FLOW CONNECTOR ---------- */
+  .flow {
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: -32px 0 32px;
+  }
+  .flow svg { overflow: visible; }
+
+  /* ---------- CARDS ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 2px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover { box-shadow: 0 8px 24px rgba(26,23,20,0.08); transform: translateY(-2px); }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .card-head h3 { margin: 0; }
+  .score {
+    font-family: 'Instrument Serif', serif;
+    font-size: 42px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .score small { font-size: 15px; color: var(--ink-mute); font-family: 'DM Sans', sans-serif; }
+  .tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    font-size: 9px;
+    color: var(--ink-soft);
+    margin: 4px 4px 0 0;
+  }
+  .tag.good { background: rgba(74,122,78,0.1); color: var(--good); border-color: rgba(74,122,78,0.3); }
+  .tag.bad { background: rgba(196,93,62,0.1); color: var(--accent); border-color: rgba(196,93,62,0.3); }
+
+  /* ---------- SWATCHES ---------- */
+  .swatch-row { display: flex; gap: 8px; margin: 14px 0; }
+  .swatch {
+    width: 40px; height: 40px; border-radius: 4px;
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .swatch::after {
+    content: attr(data-hex);
+    position: absolute;
+    bottom: -18px; left: 0;
+    font-size: 9px;
+    color: var(--ink-mute);
+    font-family: monospace;
+  }
+
+  /* ---------- TABLE ---------- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--line);
+    font-size: 13px;
+    margin: 16px 0;
+  }
+  th, td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  tr:last-child td { border-bottom: 0; }
+  td.num-cell { text-align: center; font-variant-numeric: tabular-nums; color: var(--ink); }
+  tr.highlight td { background: rgba(196,93,62,0.06); }
+  tr.highlight td:first-child { border-left: 3px solid var(--accent); }
+  .total { font-weight: 700; color: var(--accent); }
+
+  /* ---------- PATTERNS ---------- */
+  .patterns { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+  .pattern {
+    background: var(--card);
+    padding: 24px;
+    border-top: 2px solid var(--accent);
+  }
+  .pattern-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  /* ---------- EXECUTIVE ---------- */
+  .exec {
+    background: var(--ink);
+    color: #e8e2d6;
+    padding: 40px 44px;
+    border-radius: 2px;
+    position: relative;
+  }
+  .exec h2 { color: #f6f4f0; }
+  .exec p { color: #c7c0b2; font-size: 16px; line-height: 1.7; }
+  .exec .accent-line {
+    width: 40px;
+    height: 2px;
+    background: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    margin-top: 72px;
+    font-size: 11px;
+    color: var(--ink-mute);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ---------- PRINT ---------- */
+  @media print {
+    @page { size: A4; margin: 16mm 14mm; }
+    body { background: white; }
+    body::before { display: none; }
+    .page { padding: 0; max-width: 100%; }
+    .card, table, .exec, .pattern { break-inside: avoid; }
+    section { break-inside: avoid-page; }
+    h2 { break-after: avoid; }
+    .cover { break-after: page; }
+  }
+
+  /* ---------- MOBILE ---------- */
+  @media (max-width: 640px) {
+    .page { padding: 40px 22px 64px; }
+    h1, .cover-title { font-size: 44px !important; }
+    h2 { font-size: 30px; }
+    .section-num { font-size: 72px; right: -8px; }
+    .card { padding: 22px; }
+    .card-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .exec { padding: 28px 24px; }
+    table { font-size: 11px; }
+    th, td { padding: 10px 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <header class="cover">
+    <div class="cover-meta">
+      <span class="mono">Competitive Intelligence Report</span>
+      <span class="mono">April 2026</span>
+    </div>
+    <h1 class="cover-title">A playbook for<br/>dominating the<br/><em>Houston tire</em> niche.</h1>
+    <div class="cover-sub">
+      Prepared for <strong>24 Hour Tire Houston</strong>. A scrape-backed analysis of
+      the top five emergency-tire operators in greater Houston, their design choices,
+      their weaknesses, and the single-page recommendation that lets you leapfrog all of them.
+    </div>
+    <div class="badge-row">
+      <span class="badge accent">Competitive Analysis</span>
+      <span class="badge">Brand Audit</span>
+      <span class="badge">Build Direction</span>
+    </div>
+  </header>
+
+  <!-- EXEC SUMMARY -->
+  <section class="exec">
+    <div class="accent-line"></div>
+    <h2>Executive summary</h2>
+    <p>
+      The 24-hour tire category in Houston is crowded but visually flat. Every major
+      competitor runs on a DIY builder (Wix, GoDaddy, Hibu), repeats "24 Hours" three
+      to six times without social proof, and treats the phone number as the entire
+      conversion strategy. Not one shows testimonials on the homepage. Not one uses
+      motion, cinematic photography, or a real service-area map.
+    </p>
+    <p>
+      That is the whole opportunity. Shipping a scroll-animated, photography-led,
+      review-anchored homepage — with a "Send Help Now" flow that captures location
+      and tire issue in under ten seconds — makes 24 Hour Tire Houston the best-looking
+      operator in the niche on day one, and the only one with a conversion funnel that
+      rivals a national brand.
+    </p>
+  </section>
+
+  <div class="flow">
+    <svg width="2" height="48"><line x1="1" y1="0" x2="1" y2="48" stroke="#c45d3e" stroke-width="1.5" stroke-dasharray="4 4"/></svg>
+  </div>
+
+  <!-- SECTION 1 — BRAND AUDIT -->
+  <section>
+    <span class="section-num">01</span>
+    <div class="section-kicker">Client Brand Audit</div>
+    <h2>Where 24 Hour Tire Houston stands today</h2>
+    <p>The existing site runs on GoDaddy's drag-and-drop builder. Logo is a raster blob,
+      there's no on-page SEO, no schema, no testimonials, and the mobile experience is
+      effectively a stacked desktop layout. The good news: the brand positioning —
+      truly 24/7, seven locations, mobile service, heavy-duty + passenger — is
+      genuinely differentiated. It just isn't being shown.</p>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Brand snapshot</h3>
+        <span class="score">33<small>/80</small></span>
+      </div>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#E10600" data-hex="#E10600"></div>
+        <div class="swatch" style="background:#0B0B0F" data-hex="#0B0B0F"></div>
+        <div class="swatch" style="background:#FFC300" data-hex="#FFC300"></div>
+        <div class="swatch" style="background:#EDE8E0" data-hex="#EDE8E0"></div>
+      </div>
+      <div style="margin-top:28px;">
+        <span class="tag good">24/7 category leader</span>
+        <span class="tag good">7 locations</span>
+        <span class="tag good">Mobile + commercial</span>
+        <span class="tag bad">Template site</span>
+        <span class="tag bad">Zero social proof</span>
+        <span class="tag bad">No SEO foundations</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="flow">
+    <svg width="2" height="48"><line x1="1" y1="0" x2="1" y2="48" stroke="#c45d3e" stroke-width="1.5" stroke-dasharray="4 4"/></svg>
+  </div>
+
+  <!-- SECTION 2 — COMPETITORS -->
+  <section>
+    <span class="section-num">02</span>
+    <div class="section-kicker">Top 5 Competitors</div>
+    <h2>What the rest of the niche looks like</h2>
+    <p>We scored each competitor on eight axes (search visibility, review quality,
+      visual design, mobile, content depth, social proof, CTA strategy, and page speed)
+      with a ceiling of ten per axis. Beasley leads — but leads a field where the average
+      score is 44/80.</p>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Beasley Tire <span style="font-family:'DM Sans';font-size:12px;color:var(--ink-mute);">beasleytire.com</span></h3>
+        <span class="score">55<small>/80</small></span>
+      </div>
+      <p><strong>Strengths:</strong> 50 years in market, Michelin/Goodyear network
+        partnerships, real photography of techs in action, cleanest navigation in the niche.</p>
+      <p><strong>Weaknesses:</strong> No homepage testimonials, "trust us we've been here"
+        messaging with no numbers, no urgency cues despite selling emergency service.
+        Built for commercial fleets — leaves consumers on the table.</p>
+      <span class="tag good">Real photography</span>
+      <span class="tag good">Fleet network</span>
+      <span class="tag bad">No reviews</span>
+      <span class="tag bad">Commercial-only tone</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>D H Tire <span style="font-family:'DM Sans';font-size:12px;color:var(--ink-mute);">dhtire.com</span></h3>
+        <span class="score">46<small>/80</small></span>
+      </div>
+      <p><strong>Strengths:</strong> 35-year history, in-house financing, commercial plus
+        consumer coverage, broad service list.</p>
+      <p><strong>Weaknesses:</strong> Hibu template with literal placeholder copy still
+        visible on the live site ("CP #1 Headline", "Gallery Heading H2"). No real
+        photography. Reviews section exists but is empty.</p>
+      <span class="tag good">Financing</span>
+      <span class="tag good">Heavy-duty coverage</span>
+      <span class="tag bad">Placeholder copy live</span>
+      <span class="tag bad">Generic template</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>24 Hour Tire Mobile Service <span style="font-family:'DM Sans';font-size:12px;color:var(--ink-mute);">tiremobileservice.com</span></h3>
+        <span class="score">36<small>/80</small></span>
+      </div>
+      <p><strong>Strengths:</strong> Explicit 24/7 positioning, broad service list,
+        phone-CTA repetition, covers rim repair and gas delivery.</p>
+      <p><strong>Weaknesses:</strong> Wix template with broken hierarchy, "Welcome" still
+        in the nav, typography with no rhythm, mismatched headline grammar.</p>
+      <span class="tag good">24/7 claim</span>
+      <span class="tag bad">Broken hierarchy</span>
+      <span class="tag bad">Wix template</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>On Time Tires <span style="font-family:'DM Sans';font-size:12px;color:var(--ink-mute);">ontimetires.com</span></h3>
+        <span class="score">36<small>/80</small></span>
+      </div>
+      <p><strong>Strengths:</strong> Clear service area, "Best Price Guaranteed" messaging,
+        tire brand partner logos.</p>
+      <p><strong>Weaknesses:</strong> Contact form is broken on the live page (shows a raw
+        <code>[contact-form-7 404]</code> shortcode error), zero testimonials, no map, no
+        visual identity to speak of.</p>
+      <span class="tag good">Price guarantee</span>
+      <span class="tag bad">Broken form</span>
+      <span class="tag bad">No identity</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Roadside Tire Services <span style="font-family:'DM Sans';font-size:12px;color:var(--ink-mute);">roadsidetireservices.com</span></h3>
+        <span class="score">— <small>offline</small></span>
+      </div>
+      <p>Their web server refused connections during our scrape. For an emergency
+        roadside service, a homepage that can't stay up is disqualifying — worth
+        calling out in sales conversations as the bar the niche has set.</p>
+      <span class="tag bad">Site offline</span>
+    </div>
+  </section>
+
+  <div class="flow">
+    <svg width="2" height="48"><line x1="1" y1="0" x2="1" y2="48" stroke="#c45d3e" stroke-width="1.5" stroke-dasharray="4 4"/></svg>
+  </div>
+
+  <!-- SECTION 3 — TABLE -->
+  <section>
+    <span class="section-num">03</span>
+    <div class="section-kicker">Scorecard</div>
+    <h2>All five, side-by-side</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Competitor</th>
+          <th class="num-cell">Search</th>
+          <th class="num-cell">Reviews</th>
+          <th class="num-cell">Visual</th>
+          <th class="num-cell">Mobile</th>
+          <th class="num-cell">Content</th>
+          <th class="num-cell">Proof</th>
+          <th class="num-cell">CTA</th>
+          <th class="num-cell">Speed</th>
+          <th class="num-cell">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Beasley Tire</td>
+          <td class="num-cell">9</td><td class="num-cell">8</td><td class="num-cell">6</td><td class="num-cell">7</td><td class="num-cell">8</td><td class="num-cell">4</td><td class="num-cell">7</td><td class="num-cell">6</td>
+          <td class="num-cell total">55</td>
+        </tr>
+        <tr>
+          <td>D H Tire</td>
+          <td class="num-cell">7</td><td class="num-cell">7</td><td class="num-cell">5</td><td class="num-cell">6</td><td class="num-cell">6</td><td class="num-cell">3</td><td class="num-cell">6</td><td class="num-cell">6</td>
+          <td class="num-cell total">46</td>
+        </tr>
+        <tr>
+          <td>24 Hr Tire Mobile Svc</td>
+          <td class="num-cell">6</td><td class="num-cell">5</td><td class="num-cell">3</td><td class="num-cell">4</td><td class="num-cell">4</td><td class="num-cell">2</td><td class="num-cell">7</td><td class="num-cell">5</td>
+          <td class="num-cell total">36</td>
+        </tr>
+        <tr>
+          <td>On Time Tires</td>
+          <td class="num-cell">6</td><td class="num-cell">5</td><td class="num-cell">3</td><td class="num-cell">4</td><td class="num-cell">4</td><td class="num-cell">2</td><td class="num-cell">7</td><td class="num-cell">5</td>
+          <td class="num-cell total">36</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>24 Hour Tire Houston</strong></td>
+          <td class="num-cell">6</td><td class="num-cell">5</td><td class="num-cell">3</td><td class="num-cell">4</td><td class="num-cell">3</td><td class="num-cell">2</td><td class="num-cell">6</td><td class="num-cell">4</td>
+          <td class="num-cell total">33</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:var(--ink-mute);margin-top:8px;">
+      Scale 1–10 per criterion. Max 80. Average across the field: 41.
+    </p>
+  </section>
+
+  <div class="flow">
+    <svg width="2" height="48"><line x1="1" y1="0" x2="1" y2="48" stroke="#c45d3e" stroke-width="1.5" stroke-dasharray="4 4"/></svg>
+  </div>
+
+  <!-- SECTION 4 — SEO -->
+  <section>
+    <span class="section-num">04</span>
+    <div class="section-kicker">SEO Landscape</div>
+    <h2>Where the search traffic actually is</h2>
+    <p>Intent in this niche is hyper-local and emergency-driven. The winning terms cluster
+      around three patterns: <em>24 hour + [service] + Houston</em>, <em>mobile tire
+      repair near me</em>, and <em>[neighborhood] tire shop open now</em>. Beasley wins on
+      commercial fleet terms; the rest of the field is barely ranking.</p>
+    <div class="patterns">
+      <div class="pattern">
+        <div class="pattern-num">A</div>
+        <h4>Emergency consumer</h4>
+        <p style="font-size:13px;">"24 hour tire repair houston", "mobile tire change near me", "flat tire help houston"</p>
+      </div>
+      <div class="pattern">
+        <div class="pattern-num">B</div>
+        <h4>Neighborhood local</h4>
+        <p style="font-size:13px;">"tire shop South Loop", "tire shop MLK", "La Marque tire repair"</p>
+      </div>
+      <div class="pattern">
+        <div class="pattern-num">C</div>
+        <h4>Commercial & fleet</h4>
+        <p style="font-size:13px;">"18 wheeler tire repair houston", "roadside service commercial houston"</p>
+      </div>
+    </div>
+    <p style="margin-top:20px;">The client ranks for none of these at the homepage level. Location pages,
+      service pages, and schema markup are the lowest-effort, highest-leverage wins.</p>
+  </section>
+
+  <div class="flow">
+    <svg width="2" height="48"><line x1="1" y1="0" x2="1" y2="48" stroke="#c45d3e" stroke-width="1.5" stroke-dasharray="4 4"/></svg>
+  </div>
+
+  <!-- SECTION 5 — PATTERNS -->
+  <section>
+    <span class="section-num">05</span>
+    <div class="section-kicker">Patterns of the Top 10%</div>
+    <h2>What separates winners (and what we'll steal)</h2>
+    <div class="patterns">
+      <div class="pattern">
+        <div class="pattern-num">01</div>
+        <h4>Phone as anchor</h4>
+        <p style="font-size:13px;">Every winning site pins a tap-to-call CTA above the fold. Tire emergencies are phone calls, not forms.</p>
+      </div>
+      <div class="pattern">
+        <div class="pattern-num">02</div>
+        <h4>Repetition of "24/7"</h4>
+        <p style="font-size:13px;">The claim appears 3–6× per page. Redundant-feeling, conversion-essential.</p>
+      </div>
+      <div class="pattern">
+        <div class="pattern-num">03</div>
+        <h4>Real photography</h4>
+        <p style="font-size:13px;">The one site that uses action photos (Beasley) is the only one that looks serious. Stock photos fail instantly.</p>
+      </div>
+      <div class="pattern">
+        <div class="pattern-num">04</div>
+        <h4>Service-area clarity</h4>
+        <p style="font-size:13px;">Listing neighborhoods by name converts. Map pins convert harder.</p>
+      </div>
+      <div class="pattern">
+        <div class="pattern-num">05</div>
+        <h4>No one animates</h4>
+        <p style="font-size:13px;">The niche is motion-dead. Shipping a single scroll-animated page redefines the category ceiling.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="flow">
+    <svg width="2" height="48"><line x1="1" y1="0" x2="1" y2="48" stroke="#c45d3e" stroke-width="1.5" stroke-dasharray="4 4"/></svg>
+  </div>
+
+  <!-- SECTION 6 — DIRECTION -->
+  <section>
+    <span class="section-num">06</span>
+    <div class="section-kicker">Recommended Design Direction</div>
+    <h2>The build, in one page</h2>
+
+    <div class="card">
+      <div class="card-head"><h3>Palette</h3></div>
+      <div class="swatch-row">
+        <div class="swatch" style="background:#E10600" data-hex="#E10600"></div>
+        <div class="swatch" style="background:#0B0B0F" data-hex="#0B0B0F"></div>
+        <div class="swatch" style="background:#FFC300" data-hex="#FFC300"></div>
+        <div class="swatch" style="background:#EDE8E0" data-hex="#EDE8E0"></div>
+        <div class="swatch" style="background:#1a1714" data-hex="#1a1714"></div>
+      </div>
+      <p style="margin-top:32px;">
+        Fire red urgency, asphalt black backdrop, amber hazard accent, concrete neutral.
+        Category competitors are monochrome or faded blue. This palette reads
+        <em>highway-signage, auto-shop, emergency dispatch</em> — exactly the connotations
+        a 2 a.m. customer is already reaching for.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Typography</h3></div>
+      <p><strong>Anton</strong> or <strong>Barlow Condensed</strong> for display headlines
+        — industrial, condensed, freeway-sign heritage. <strong>Inter</strong> for body.
+        Nobody in the niche is using typography as a brand asset, so this alone creates
+        immediate visual separation.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Motion</h3></div>
+      <p>GSAP + ScrollTrigger. Hero tire rolls in from off-screen. Phone number pins and
+        glows on scroll. Counters animate up ("7 locations", "15-min avg response",
+        "24/7/365"). Location pins drop sequentially on the map. Sections rise into view
+        with staggered reveals.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Conversion</h3></div>
+      <p>Dual-track funnel: <strong>"Need help now?"</strong> launches a two-tap flow
+        (location + tire issue) that dials the shop with context. <strong>"Run a
+        fleet?"</strong> routes to a commercial form. Every screen sticks a persistent
+        call button. Reviews with star counts pinned above the fold.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>What to avoid</h3></div>
+      <p>Template hero overlays. Generic stock photos of tires on white backgrounds.
+        Service-list walls with no hierarchy. "Welcome to our site" copy. Blue corporate
+        gradients. Anything that looks like it could be any of our five competitors.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span class="mono">24 Hour Tire Houston × Competitive Analysis</span>
+    <span class="mono">April 2026 · Page of 1</span>
+  </footer>
+</div>
+</body>
+</html>

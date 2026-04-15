@@ -1,0 +1,21 @@
+# Dev scratch / audit screenshots
+audit-*.png
+unsplash-preview*.jpeg
+unsplash-preview*.jpg
+get_url.py
+
+# Playwright MCP browser profile
+.playwright-mcp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Node (if ever added)
+node_modules/
+dist/
+.env
+.env.local
