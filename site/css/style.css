@@ -227,7 +227,7 @@ a, button, summary, [role="button"] { touch-action: manipulation; }
   letter-spacing: -0.02em;
 }
 .brand-24.lg { font-size: 48px; }
-.brand-name { font-size: 11px; letter-spacing: 0.08em; }
+.brand-name { font-size: 11px; letter-spacing: 0.08em; line-height: 1.25; }
 
 .site-nav {
   display: flex;
